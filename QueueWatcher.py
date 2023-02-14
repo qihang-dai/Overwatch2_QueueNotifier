@@ -13,14 +13,19 @@ class QueueWatcher:
     def __init__(self, window_name="Overwatch"):
         self.window_name = window_name
         self.window = win32gui.FindWindow(None, window_name)
-        self.window_position = win32gui.GetWindowRect(self.window)
         self.position = (-5,-5)
         self.alive = False
-        if self.window:
-            logger.info("%s window found", window_name)
-        else:
-            logger.error("%s window not found", window_name)
-    
+        try:
+            self.window_position = win32gui.GetWindowRect(self.window)
+            top, left, bottom, right = self.window_position
+            height, width = bottom - top, right - left
+            logger.info("overwatch window size: %s, %s", width, height)
+            logger.info("position: %s", self.window_position)
+        except Exception as e:
+            logger.error(e)
+            logger.error("window not found")
+            exit()
+         
     def is_queue_alive(self):
         return self.alive
     
@@ -43,11 +48,8 @@ class QueueWatcher:
         position = self.window_position
         top, left, bottom, right = position
         height, width = bottom - top, right - left
-        logger.info("overwatch window size: %s, %s", width, height)
-        logger.info("position: %s", position)
         # take a screenshot of that monitor and save it. it also works with multiple monitors
         with mss.mss() as sct:
-            logger.info("monitor: %s", sct.monitors[1])
             sct_img = sct.grab(position)
             #save the screenshot
             return Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
@@ -66,9 +68,10 @@ class QueueWatcher:
         self.position = (x + offset_x, y + offset_y)
         logger.info("pixel position: %s, %s", self.position[0], self.position[1])
         utils.highlight_pixel(screenshot, self.position[0], self.position[1])
+        return self.position
     
     
-    def run(self):
+    def run(self, show = False):
         ''' 
         check if the queue is still active
         return True if the queue is finished
@@ -76,27 +79,28 @@ class QueueWatcher:
         '''
         self.show_window()
         screenshot = self.get_queueing_image()
-        self.set_position(screenshot)
+        x, y = self.set_position(screenshot)
         self.set_alive()
-        prev = screenshot.getpixel(self.get_position())
+        prev = screenshot.getpixel((x, y))
         start_time = time.time()
         time.sleep(2)
 
         #logger 
         logger.info("previous pixel: %s", prev)
-        logger.info("previous position: %s, %s", self.position[0], self.position[1])
+        logger.info("previous position: %s, %s", x, y)
         logger.info("start queueing time: %s", utils.make_time_readable(start_time))
 
         while self.is_queue_alive():
             screenshot = self.get_queueing_image()
-            cur_pixel = screenshot.getpixel(self.get_position())
+            cur_pixel = screenshot.getpixel((x, y))
 
             time_spent = time.time() - start_time
-            time_spent = utils.make_time_readable(time_spent)
+            time_spent = utils.make_time_spent_readable(time_spent)
 
             utils.print_rgb_color(rgb=cur_pixel)
             utils.print_rgb_color(rgb=prev)
-            utils.highlight_pixel(screenshot, self.position[0], self.position[1])
+            if show:
+                utils.highlight_pixel(screenshot, x, y)
 
             logger.info("previous pixel: %s", prev)
             logger.info("current pixel: %s", cur_pixel)
@@ -106,6 +110,7 @@ class QueueWatcher:
                 logger.info("queue finished, queueing time: %s", time_spent)
                 screenshot.show()
                 return True
+            prev = cur_pixel
             time.sleep(5)
             logger.info("queueing time: %s", time_spent)
         logger.info("queue stopped before it finished, queueing time: %s", time_spent)
@@ -114,4 +119,4 @@ class QueueWatcher:
         
 if __name__ == '__main__':
     q = QueueWatcher()
-    q.run()
+    q.run(show = True)

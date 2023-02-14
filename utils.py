@@ -6,6 +6,8 @@ from logger import logger
 def highlight_pixel(im, x, y):
     draw = ImageDraw.Draw(im)
     draw.rectangle([x-5, y-5, x+5, y+5], outline="red")
+    im.show()
+    
 
 def make_time_readable(time):
     return datetime.datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')

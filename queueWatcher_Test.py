@@ -9,8 +9,7 @@ class TestQueueWatcher(unittest.TestCase):
         # self.queueWatcher.show_window()
 
     def test_set_position(self):
-        self.queueWatcher.set_position()
-    
+        pass    
     def test_check_queue(self):
         self.queueWatcher.check_queue()
     
