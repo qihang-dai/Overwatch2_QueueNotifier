@@ -2,12 +2,12 @@
 
  Notify you when the Overwatch 2 queue is done.
 
- send an email when game is found.
+ send you discord notification when the queue is done.
 
 
 ## Features:
 
-1. support for multiple monitor, fullscreen, boarderless window, windowed mode
+1. support for multiple monitor, fullscreen, boarderless window, windowed mode. 
 
 ## Installation:
 

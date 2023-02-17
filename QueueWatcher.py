@@ -1,14 +1,9 @@
-import logging
-import win32gui
-from PIL import Image, ImageGrab
-import mss
-from logger import logger
 import utils
-from datetime import datetime as dt
+from utils import logger
+import win32gui
+from PIL import Image
+import mss
 import time
-import pyautogui
-import os
-
 class QueueWatcher:
     def __init__(self, window_name="Overwatch"):
         self.window_name = window_name
@@ -25,6 +20,7 @@ class QueueWatcher:
             logger.error(e)
             logger.error("window not found")
             exit()
+    
          
     def is_queue_alive(self):
         return self.alive

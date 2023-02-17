@@ -1,5 +1,14 @@
 #ignore all pycache files
 __pycache__/
 
+#ignore all .pyc files
+*.pyc
+
 #ignore log files
 *.log
+
+#ignore env files
+.env
+
+#ignore .png files
+*.png
