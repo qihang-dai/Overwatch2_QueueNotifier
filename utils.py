@@ -52,8 +52,8 @@ def print_rgb_color(rgb):
     print("\033[38;2;{};{};{}mThis text is in RGB color\033[0m".format(rgb[0], rgb[1], rgb[2]))
     logger.info("This text is in RGB color")
 
-rgb = (255, 0, 0)
+# rgb = (255, 0, 0)
 
-print_rgb_color(rgb)
+# print_rgb_color(rgb)
 
 

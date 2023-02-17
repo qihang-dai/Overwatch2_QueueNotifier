@@ -1,0 +1,1 @@
+#one can set pixel position here, or get it from the discord bot -> webserver -> clientGUI.py
