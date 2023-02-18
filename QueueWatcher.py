@@ -43,7 +43,7 @@ class QueueWatcher:
             y = height // 10 - 40 
         self.position = (x + offset_x, y + offset_y)
         logger.info("pixel position: %s, %s", self.position[0], self.position[1])
-        utils.highlight_pixel(screenshot, self.position[0], self.position[1])
+        # utils.highlight_pixel(screenshot, self.position[0], self.position[1])
         return self.position
     
     
@@ -90,6 +90,9 @@ class QueueWatcher:
             logger.info("queueing time: %s", time_spent)
         logger.info("queue stopped before it finished, queueing time: %s", time_spent)
         return False
+    
+    def stop(self):
+        self.set_dead()
     
         
 if __name__ == '__main__':

@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import discord
 import logging
+import asyncio
 from QueueWatcher import QueueWatcher
 
 load_dotenv()
@@ -31,11 +32,35 @@ async def queue(ctx, description = "send you a message when game is found"):
     # Get the author of the message (i.e., the user who triggered the command)
     author = ctx.author
     # Send a DM to the author
+    await ctx.send(author.mention + "queue up")
     await author.send("You will receive a message when a game is found!", delete_after = 10)
 
     #TODO: start the queue watcher
     found = qw.run()
     if found:
         await author.send("Game found!")
+        await ctx.send(author.mention + "Game found!")
+
+@bot.command()
+async def stop(ctx, description = "stop the queue watcher"):
+    # Get the author of the message (i.e., the user who triggered the command)
+    author = ctx.author
+    # Send a DM to the author
+    await ctx.send(author.mention + "stop queue")
+    await author.send("You will not receive a message when a game is found!", delete_after = 10)
+    qw.stop()
+
+#send a mention and dm to the user after 5 seconds
+@bot.command()
+async def test(ctx, description = "test the bot"):
+    # Get the author of the message (i.e., the user who triggered the command)
+    author = ctx.author
+    # Send a DM to the author
+    await ctx.send(author.mention + "test")
+    await author.send("You will receive a message in 5 seconds!", delete_after = 10)
+    await asyncio.sleep(5)
+    await author.send("Test successful!")
+    await ctx.send(author.mention + "Test successful!")
+
 
 bot.run(token)
