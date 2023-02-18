@@ -5,10 +5,9 @@
  send you discord notification when the queue is done.
 
 
-## Features:
+## Bugs:
 
-1. support for multiple monitor, fullscreen, boarderless window, windowed mode. 
-
+hard to cope with multiple monitors windows api sometimes return wrong window position.
 ## Installation:
 
 
