@@ -5,9 +5,10 @@
  send you discord notification when the queue is done.
 
 
-## Bugs:
+## Usage:
 
-hard to cope with multiple monitors windows api sometimes return wrong window position.
+would only grab the main monitor if there are multiple monitors
+
 ## Installation:
 
 

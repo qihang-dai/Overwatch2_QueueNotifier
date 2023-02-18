@@ -23,12 +23,16 @@ class QueueWatcher:
         return self.position
 
     def show_window(self):
-        win32gui.ShowWindow(self.window, 3)
-        win32gui.SetForegroundWindow(self.window)
-        time.sleep(1)
+        try:
+            win32gui.ShowWindow(self.window, 3)
+            win32gui.SetForegroundWindow(self.window)
+            time.sleep(1)
+        except Exception as e:
+            logger.error("show window error: %s", e)
+            return False
 
     def get_queueing_image(self):        
-        return ImageGrab.grab()
+        return ImageGrab.grab() #would only grab the main monitor if there are multiple monitors
 
     def set_position(self, screenshot,offset_x=0, offset_y=0):
         ''' set the position of the pixel,
