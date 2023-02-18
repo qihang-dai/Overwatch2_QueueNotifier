@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import discord
 import logging
+from QueueWatcher import QueueWatcher
 
 load_dotenv()
 token = os.getenv('TOKEN')
@@ -14,6 +15,8 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 bot = discord.Bot()
+
+qw = QueueWatcher()
 
 @bot.event
 async def on_ready():
@@ -31,5 +34,8 @@ async def queue(ctx, description = "send you a message when game is found"):
     await author.send("You will receive a message when a game is found!", delete_after = 10)
 
     #TODO: start the queue watcher
+    found = qw.run()
+    if found:
+        await author.send("Game found!")
 
 bot.run(token)

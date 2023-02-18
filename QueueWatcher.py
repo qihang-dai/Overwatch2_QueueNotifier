@@ -1,8 +1,7 @@
 import utils
 from utils import logger
 import win32gui
-from PIL import Image
-import mss
+from PIL import Image, ImageGrab
 import time
 class QueueWatcher:
     def __init__(self, window_name="Overwatch"):
@@ -10,18 +9,7 @@ class QueueWatcher:
         self.window = win32gui.FindWindow(None, window_name)
         self.position = (-5,-5)
         self.alive = False
-        try:
-            self.window_position = win32gui.GetWindowRect(self.window)
-            top, left, bottom, right = self.window_position
-            height, width = bottom - top, right - left
-            logger.info("overwatch window size: %s, %s", width, height)
-            logger.info("position: %s", self.window_position)
-        except Exception as e:
-            logger.error(e)
-            logger.error("window not found")
-            exit()
     
-         
     def is_queue_alive(self):
         return self.alive
     
@@ -40,15 +28,7 @@ class QueueWatcher:
         time.sleep(1)
 
     def get_queueing_image(self):        
-        # get the position of the overwatch window
-        position = self.window_position
-        top, left, bottom, right = position
-        height, width = bottom - top, right - left
-        # take a screenshot of that monitor and save it. it also works with multiple monitors
-        with mss.mss() as sct:
-            sct_img = sct.grab(position)
-            #save the screenshot
-            return Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+        return ImageGrab.grab()
 
     def set_position(self, screenshot,offset_x=0, offset_y=0):
         ''' set the position of the pixel,
@@ -104,7 +84,6 @@ class QueueWatcher:
             if utils.is_color_different(cur_pixel, prev):
                 self.set_dead()
                 logger.info("queue finished, queueing time: %s", time_spent)
-                screenshot.show()
                 return True
             prev = cur_pixel
             time.sleep(5)
