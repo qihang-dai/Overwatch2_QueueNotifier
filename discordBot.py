@@ -4,6 +4,10 @@ import discord
 import logging
 import asyncio
 from QueueWatcher import QueueWatcher
+from sendMail import send
+import re
+import typing
+import concurrent.futures
 
 load_dotenv()
 token = os.getenv('TOKEN')
@@ -27,22 +31,32 @@ async def on_ready():
 async def hello(ctx):
     await ctx.respond("Hey!")
 
-@bot.command()
-async def queue(ctx, description = "send you a message when game is found"):
+@bot.command(name = "queue", description = "Queue up for a game")
+async def queue(ctx, email: typing.Optional[str]):
     # Get the author of the message (i.e., the user who triggered the command)
     author = ctx.author
     # Send a DM to the author
     await ctx.send(author.mention + "queue up")
     await author.send("You will receive a message when a game is found!", delete_after = 10)
 
-    #TODO: start the queue watcher
-    found = qw.run()
+    if email:
+        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        email_match = re.search(email_pattern, email)
+
+    # Run the queue watcher in a separate thread using run_in_executor()
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        found = await loop.run_in_executor(pool, qw.run)
+    
     if found:
         await author.send("Game found!")
         await ctx.send(author.mention + "Game found!")
+        if email_match:
+            print("Sending email to %s", email)
+            send(email)
 
-@bot.command()
-async def stop(ctx, description = "stop the queue watcher"):
+@bot.command(name = "stop", description = "Stop monitor the queue")
+async def stop(ctx):
     # Get the author of the message (i.e., the user who triggered the command)
     author = ctx.author
     # Send a DM to the author
@@ -52,7 +66,7 @@ async def stop(ctx, description = "stop the queue watcher"):
 
 #send a mention and dm to the user after 5 seconds
 @bot.command()
-async def test(ctx, description = "test the bot"):
+async def test(ctx):
     # Get the author of the message (i.e., the user who triggered the command)
     author = ctx.author
     # Send a DM to the author

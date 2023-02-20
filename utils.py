@@ -27,7 +27,9 @@ logger.addHandler(console_handler)
 
 def highlight_pixel(im, x, y):
     draw = ImageDraw.Draw(im)
-    draw.rectangle([x-5, y-5, x+5, y+5], outline="red")
+    #draw a big red dot at the pixel
+    draw.ellipse((x-5, y-5, x+5, y+5), fill=(255, 0, 0))
+
     im.show()
     
 

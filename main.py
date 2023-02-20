@@ -1,9 +1,10 @@
 from utils import logger
-from sendMail import send
+from GUI import QueueWatcherGUI
 
 def main():
     logger.info("start")
-    send()
+    gui = QueueWatcherGUI()
+    gui.run()
     
 
 if __name__ == '__main__':

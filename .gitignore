@@ -10,5 +10,6 @@ __pycache__/
 #ignore env files
 .env
 
-#ignore .png files
-*.png
+#ignore build
+build/
+dist/

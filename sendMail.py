@@ -3,23 +3,22 @@ import ssl
 from email.message import EmailMessage
 import os
 from dotenv import load_dotenv
+from utils import logger
 
-
-def send():
+def send(sender_email, password, receiver_email):
     load_dotenv()
-
+    if not receiver_email:
+        return
     # Email parameters from .env
-    sender_email = os.getenv('SENDER_EMAIL')
-    receiver_email = os.getenv('RECEIVER_EMAIL')
-    password = os.getenv('PASSWORD')
-
-    # print the above 3
-    print(sender_email)
-    print(receiver_email)
-    print(password)
-
+    if not sender_email:
+        sender_email = os.getenv('SENDER_EMAIL')
+    # receiver_email = os.getenv('RECEIVER_EMAIL')
+    if not password:
+        password = os.getenv('PASSWORD')
     subject = "Game Found"
     body = "Hello, game has been found!"
+
+    logger.info(f"Sending email to {receiver_email} from {sender_email}")
 
     # Create email message
     msg = EmailMessage()
@@ -36,6 +35,3 @@ def send():
         server.starttls(context=context)
         server.login(sender_email, password)
         server.send_message(msg)
-
-if __name__ == "__main__":
-    send()
