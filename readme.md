@@ -14,7 +14,7 @@ Small 25.8 MB file, though i add some big gif images to make it look better. com
 
 ## How it works
 
-Default Designed for windows 10, Overwatch2 1920x1080 resolution, but could be used for other games/programs as long as you know the pixel position of the queue status.
+**Default Designed for windows 10, Overwatch2 1920x1080 resolution, but could be used for other game** as long as you know the pixel position of the queue status.
 
 1. the program will call the game window you want to be the foreground window, and then take a screenshot of the monitor (must be main monitor if you have multiple monitors). 
 
