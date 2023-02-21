@@ -12,6 +12,10 @@ Small 25.8 MB file, though i add some big gif images to make it look better. com
 
 [Download](https://github.com/qihang-dai/Overwatch2_QueueNotifier/releases/tag/v0.0.0)
 
+## Future features
+
+1. add webhook for easily discord push notifications
+
 ## How it works
 
 **Default Designed for windows 10, Overwatch2 1920x1080 resolution, but could be used for other game** as long as you know the pixel position of the queue status.
@@ -30,6 +34,8 @@ By default it will send email from my registrated email address **queuefound@gma
 
 when pack the app into a single exe file using pyinstaller, for the exe the images can only be accessed if they are in the root folder.
 
-Its a bit tricky to make it work with images. solved by: `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." --add-data "*.gif;." main.py`
+Its a bit tricky to make it work with images. solved by: `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." --add-data "*.gif;." main.py` [stackOverflow](https://stackoverflow.com/a/72060275)
 
-when use the pyinstaller, be sure to create a virtual environment and install all requried packages in the virtual environment. otherwise the exe file will be very big. `pipreqs` that automatically generate requriements.txt somehow generate unnecessary packages and miss required packages in the requriments.txt file.
+when use the pyinstaller, be sure to create a virtual environment and install all requried packages in the virtual environment. `python -m venv venv` and `venv\Scripts\activate` is enough. `deactivate` to go back to the base env.
+
+otherwise the exe file will be very big. `pipreqs` that automatically generate requriements.txt somehow generate unnecessary packages and miss required packages in the requriments.txt file.

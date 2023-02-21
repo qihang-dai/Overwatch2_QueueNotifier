@@ -5,13 +5,21 @@ import time
 import tkinter.messagebox as messagebox
 from datetime import datetime
 from utils import is_valid_email, logger
+import os, sys
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 class QueueWatcherGUI:
     def __init__(self):
         self.queue_watcher = QueueWatcher()
         self.root = tk.Tk()
         self.root.title("Overwatch Queue Watcher")
-        self.root.iconbitmap("hollow.ico")
+        self.root.iconbitmap(resource_path("hollow.ico"))
         self.root.geometry("600x600")
         self.root.resizable(False, False)
         self.root.configure(background="sky blue")
@@ -110,6 +118,8 @@ class QueueWatcherGUI:
         # Add a button to change the background image
         self.current_image_index = 2
         self.image_filenames = ["mercy.gif", "kiroko.gif", "hollow.png"]
+        #add a prefix to the list
+        self.image_filenames = [resource_path(filename) for filename in self.image_filenames]
 
         self.change_background_button = tk.Button(self.root, text="Change Background", command=self.change_background)
         self.change_background_button.configure(bg="white", fg="black", activebackground="white")
@@ -122,7 +132,7 @@ class QueueWatcherGUI:
 
 
         # Add the image to the left of the window
-        self.background_image = tk.PhotoImage(file="hollow.png")
+        self.background_image = tk.PhotoImage(file=resource_path("hollow.png"))
         self.background_label = tk.Label(self.root, image=self.background_image)
         self.background_label.pack(side="left")
 
