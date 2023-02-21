@@ -1,0 +1,5 @@
+pytest
+python-dotenv
+pywin32
+traitlets
+win32gui==221.6

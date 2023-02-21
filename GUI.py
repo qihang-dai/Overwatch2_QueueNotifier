@@ -3,6 +3,7 @@ import threading
 from QueueWatcher import QueueWatcher
 import time 
 import tkinter.messagebox as messagebox
+from datetime import datetime
 
 class QueueWatcherGUI:
     def __init__(self):
@@ -10,7 +11,7 @@ class QueueWatcherGUI:
         self.root = tk.Tk()
         self.root.title("Overwatch Queue Watcher")
         self.root.iconbitmap("hollow.ico")
-        self.root.geometry("600x400")
+        self.root.geometry("600x450")
         self.root.resizable(False, False)
         self.root.configure(background="sky blue")
 
@@ -19,9 +20,21 @@ class QueueWatcherGUI:
         self.right_frame.pack(side="right", fill="both", expand=True)
         self.right_frame.configure(background="snow")
 
+        #add current time status label
+        self.time_label = tk.Label(self.right_frame, text="Current Time: ", font=("Arial", 10), bg="snow")
+        self.time_label.pack()
+        self.update_time()
+
+        self.time_spent = 0
+        self.time_spent_job = None
+
+        #add Queue status label once start button is clicked
+        self.queue_status_label = tk.Label(self.right_frame, text="Queue Time: ", font=("Arial", 12), bg="snow")
+        self.queue_status_label.pack()
+
         # Add a text box to describe how the program works
-        description_text = """default set for Overwatch 1920x1080 resolution. click set position to see which pixel the program is looking at. set offset x and y to adjust the pixel position. click start to start the program."""
-        self.description_box = tk.Text(self.right_frame, height=5, width=40, wrap="word")
+        description_text = """Default set for Overwatch 1920x1080 resolution. click set position to see which pixel the program is looking at. set offset x and y to adjust the pixel position. click start to start the program."""
+        self.description_box = tk.Text(self.right_frame, height=5, width=40, wrap="word", font=("Helvetica", 10), bg="snow", bd = 1)
         self.description_box.insert(tk.END, description_text)
         self.description_box.config(state="disabled")
         self.description_box.pack()
@@ -63,13 +76,16 @@ class QueueWatcherGUI:
 
         # Add the Start, Stop, and Set Position buttons to the right frame
         self.start_button = tk.Button(self.right_frame, text="Start", command=self.start_queue_watcher)
-        self.start_button.pack(fill = "x")
+        self.start_button.configure(bg="lightgreen", fg="black", activebackground="white")
+        self.start_button.pack()
 
         self.stop_button = tk.Button(self.right_frame, text="Stop", command=self.stop_queue_watcher, state="disabled")
-        self.stop_button.pack(fill= "x")
+        self.stop_button.configure(bg="pink", fg="black", activebackground="white")
+        self.stop_button.pack()
 
         self.set_position_button = tk.Button(self.right_frame, text="Set Position", command=self.set_position)
-        self.set_position_button.pack(fill = "x")
+        self.set_position_button.configure(bg="lightyellow", fg="black", activebackground="white")
+        self.set_position_button.pack()
 
         # Add a button to change the background image
         self.current_image_index = 2
@@ -88,6 +104,27 @@ class QueueWatcherGUI:
         self.background_image = tk.PhotoImage(file="hollow.png")
         self.background_label = tk.Label(self.root, image=self.background_image)
         self.background_label.pack(side="left")
+
+        #stop all thread when program is closed
+        self.root.protocol("WM_DELETE_WINDOW", self.close_program)
+
+
+    def update_clock(self):
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        self.time_label.config(text=current_time)
+        self.root.after(1000, self.update_clock)  # update every second
+    
+    def update_time_spent(self):
+        self.time_spent += 1
+        self.queue_status_label.config(text="Queue Time: " + str(self.time_spent) + " seconds")
+        self.time_spent_job = self.root.after(1000, self.update_time_spent)
+    
+    def clear_time_spent(self):
+        self.time_spent = 0
+        self.queue_status_label.config(text="Queue Time: " + str(self.time_spent) + " seconds")
+        if self.time_spent_job is not None:
+            self.root.after_cancel(self.time_spent_job)
     
     def feeling_lucky(self):
         messagebox.showinfo("Feeling Lucky", "You are feeling lucky today!")
@@ -123,9 +160,11 @@ class QueueWatcherGUI:
         self.root.after(1000, self.check_queue_watcher)
 
     def start_queue_watcher(self):
+        #start count time spent
+        self.update_time_spent()
+
         self.start_button.config(state="disabled")
         self.stop_button.config(state="normal")
-
         thread = threading.Thread(target=self.queue_watcher.run)
         thread.start()
         # print stop when thread is stopped, make button available
@@ -133,9 +172,11 @@ class QueueWatcherGUI:
 
 
     def stop_queue_watcher(self):
+        self.clear_time_spent()
         self.stop_button.config(state="disabled")
         self.start_button.config(state="normal")
         self.queue_watcher.stop()
+
     
     def set_position(self):
         self.start_button.config(state="normal")

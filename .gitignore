@@ -13,3 +13,9 @@ __pycache__/
 #ignore build
 build/
 dist/
+
+#ignore .spec files
+*.spec
+
+#venv
+venv/

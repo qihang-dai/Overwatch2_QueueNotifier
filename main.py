@@ -1,6 +1,7 @@
 from utils import logger
 from GUI import QueueWatcherGUI
 
+
 def main():
     logger.info("start")
     gui = QueueWatcherGUI()

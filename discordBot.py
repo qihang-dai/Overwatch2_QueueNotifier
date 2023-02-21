@@ -1,3 +1,8 @@
+"""
+Discord bot is not used in the final version of the project.
+It is working, but its hard to find a way to deploy the bot on cloud 
+while the program need to take screenshot from the local machine.
+"""
 from dotenv import load_dotenv
 import os
 import discord
@@ -53,7 +58,7 @@ async def queue(ctx, email: typing.Optional[str]):
         await ctx.send(author.mention + "Game found!")
         if email_match:
             print("Sending email to %s", email)
-            send(email)
+            send(sender_email = None, password = None, receiver_email = email)
 
 @bot.command(name = "stop", description = "Stop monitor the queue")
 async def stop(ctx):
