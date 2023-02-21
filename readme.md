@@ -38,7 +38,7 @@ when pack the app into a single exe file using pyinstaller, for the exe the imag
 
 Its a bit tricky to make it work with images. solved by: `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." --add-data "*.gif;." main.py` [stackOverflow](https://stackoverflow.com/a/72060275)
 
-for light weight withoug big fif file, use `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." -i "hollow.ico" main.py`
+for light weight withoug big fif file, use `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." -i "hollow.ico" main.py` (set icon)
 
 when use the pyinstaller, be sure to create a virtual environment and install all requried packages in the virtual environment. `python -m venv venv` and `venv\Scripts\activate` is enough. `deactivate` to go back to the base env.
 
