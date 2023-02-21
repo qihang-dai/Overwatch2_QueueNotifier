@@ -6,9 +6,11 @@
 
 discord bot is not deployed on cloud so you need to host it yourself. checkout the [dcbot branch](https://github.com/qihang-dai/Overwatch2_QueueNotifier/tree/dcbot)
 
+dev logs in notion [here](https://www.notion.so/Overwatch-Queue-Project-73d4bdb41b204aee8fdac16113148adb)
+
 ## Download .exe file
 
-Small 25.8 MB file, though i add some big gif images to make it look better. compressed in zip file.
+Small 16 MB file, though i add some big gif images to make it look better. compressed in zip file.
 
 [Download](https://github.com/qihang-dai/Overwatch2_QueueNotifier/releases/tag/v0.0.0)
 
@@ -35,6 +37,8 @@ By default it will send email from my registrated email address **queuefound@gma
 when pack the app into a single exe file using pyinstaller, for the exe the images can only be accessed if they are in the root folder.
 
 Its a bit tricky to make it work with images. solved by: `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." --add-data "*.gif;." main.py` [stackOverflow](https://stackoverflow.com/a/72060275)
+
+for light weight withoug big fif file, use `pyinstaller --noconfirm --onefile --noconsole --add-data "hollow*;." -i "hollow.ico" main.py`
 
 when use the pyinstaller, be sure to create a virtual environment and install all requried packages in the virtual environment. `python -m venv venv` and `venv\Scripts\activate` is enough. `deactivate` to go back to the base env.
 
