@@ -2,7 +2,7 @@
 
  send you discord notification or email notification when the queue is done.
 
-![1676945438925](image/readme/1676945438925.png)
+![1676953335290](image/readme/1676953335290.png)
 
 discord bot is not deployed on cloud so you need to host it yourself. checkout the [dcbot branch](https://github.com/qihang-dai/Overwatch2_QueueNotifier/tree/dcbot)
 
