@@ -4,6 +4,7 @@ from QueueWatcher import QueueWatcher
 import time 
 import tkinter.messagebox as messagebox
 from datetime import datetime
+from utils import is_valid_email, logger
 
 class QueueWatcherGUI:
     def __init__(self):
@@ -11,7 +12,7 @@ class QueueWatcherGUI:
         self.root = tk.Tk()
         self.root.title("Overwatch Queue Watcher")
         self.root.iconbitmap("hollow.ico")
-        self.root.geometry("600x450")
+        self.root.geometry("600x600")
         self.root.resizable(False, False)
         self.root.configure(background="sky blue")
 
@@ -39,6 +40,18 @@ class QueueWatcherGUI:
         self.description_box.config(state="disabled")
         self.description_box.pack()
 
+        # add an input box and a button to change the window name
+        self.window_name_label = tk.Label(self.right_frame, text="Window Name: ", font=("Arial", 10), bg="snow")
+        self.window_name_label.pack()
+
+        self.window_name_input = tk.Entry(self.right_frame)
+        self.window_name_input.insert(0, "Overwatch")
+        self.window_name_input.pack()
+
+        self.window_name_button = tk.Button(self.right_frame, text="Set Window Name", command=self.set_window_name)
+        self.window_name_button.configure(bg="lightblue", fg="black", activebackground="white")
+        self.window_name_button.pack()
+
         # Add labels and input fields for the coordinates, receiver email, sender email, and sender password
         x_label = tk.Label(self.right_frame, text="X Coordinate:")
         x_label.pack()
@@ -54,6 +67,10 @@ class QueueWatcherGUI:
         self.y_input.insert(0, "0")
         self.y_input.pack()
 
+        self.set_position_button = tk.Button(self.right_frame, text="Set Position", command=self.set_position)
+        self.set_position_button.configure(bg="lightblue", fg="black", activebackground="white")
+        self.set_position_button.pack()
+
         receiver_label = tk.Label(self.right_frame, text="Receiver Email:")
         receiver_label.pack()
 
@@ -64,15 +81,21 @@ class QueueWatcherGUI:
         sender_label.pack()
 
         self.sender_input = tk.Entry(self.right_frame)
-        self.sender_input.insert(0, "queuefound@gmail.com")
+        self.default_sender = "queuefound@gmail.com"
+        self.sender_input.insert(0, self.default_sender)
         self.sender_input.pack()
 
         password_label = tk.Label(self.right_frame, text="Sender Password:")
         password_label.pack()
 
         self.password_input = tk.Entry(self.right_frame)
-        self.password_input.insert(0, "*******")
         self.password_input.pack()
+
+        #add a set_email button
+        self.set_email_button = tk.Button(self.right_frame, text="Set Email", command=self.set_email)
+        self.set_email_button.configure(bg="lightblue", fg="black", activebackground="white")
+        self.set_email_button.pack()
+        self.receiver = None
 
         # Add the Start, Stop, and Set Position buttons to the right frame
         self.start_button = tk.Button(self.right_frame, text="Start", command=self.start_queue_watcher)
@@ -83,13 +106,11 @@ class QueueWatcherGUI:
         self.stop_button.configure(bg="pink", fg="black", activebackground="white")
         self.stop_button.pack()
 
-        self.set_position_button = tk.Button(self.right_frame, text="Set Position", command=self.set_position)
-        self.set_position_button.configure(bg="lightyellow", fg="black", activebackground="white")
-        self.set_position_button.pack()
 
         # Add a button to change the background image
         self.current_image_index = 2
         self.image_filenames = ["mercy.gif", "kiroko.gif", "hollow.png"]
+
         self.change_background_button = tk.Button(self.root, text="Change Background", command=self.change_background)
         self.change_background_button.configure(bg="white", fg="black", activebackground="white")
         self.change_background_button.pack(side="bottom")
@@ -108,6 +129,16 @@ class QueueWatcherGUI:
         #stop all thread when program is closed
         self.root.protocol("WM_DELETE_WINDOW", self.close_program)
 
+        #check if the program is running
+        self.check_queue_watcher()
+    
+    def set_window_name(self):
+        window_name = self.window_name_input.get()
+        self.queue_watcher = QueueWatcher(window_name)
+        if self.queue_watcher.is_window_found():
+            messagebox.showinfo("Window Found", window_name + " window is found")
+        else:
+            messagebox.showerror("Window Not Found", window_name + " window is not found")
 
     def update_clock(self):
         now = datetime.now()
@@ -157,18 +188,21 @@ class QueueWatcherGUI:
         else:
             self.start_button.config(state="normal")
             self.stop_button.config(state="disabled")
+            self.clear_time_spent()
         self.root.after(1000, self.check_queue_watcher)
 
     def start_queue_watcher(self):
         #start count time spent
+        self.receiver = self.receiver_input.get()
+        logger.info("email info: %s", self.queue_watcher.get_email_info())
+        if not self.receiver:
+            messagebox.showerror("Error", "Please enter your email address")
+            return
         self.update_time_spent()
-
         self.start_button.config(state="disabled")
         self.stop_button.config(state="normal")
         thread = threading.Thread(target=self.queue_watcher.run)
         thread.start()
-        # print stop when thread is stopped, make button available
-        print("stop")
 
 
     def stop_queue_watcher(self):
@@ -182,16 +216,35 @@ class QueueWatcherGUI:
         self.start_button.config(state="normal")
         x = int(self.x_input.get())
         y = int(self.y_input.get())
-
+        
         screenshot = self.queue_watcher.get_queueing_image()
         self.queue_watcher.set_position(screenshot, show=True, offset_x=x, offset_y=y)
+        
 
     def set_email(self):
         receiver = self.receiver_input.get()
+        self.receiver = receiver
         sender = self.sender_input.get()
         password = self.password_input.get()
 
-        self.queue_watcher.set_email(receiver, sender, password)
+        if is_valid_email(sender) is False:
+            messagebox.showwarning("Invalid Email", "Please enter a valid sender email address")
+            return
+        
+        if is_valid_email(receiver) is False:
+            messagebox.showwarning("Invalid Email", "Please enter a valid receiver email address")
+            return
+
+        if sender and sender != self.default_sender and not password:
+            messagebox.showwarning("No Password", "No password is set for your own email")
+            return
+
+        if not receiver:
+            messagebox.showwarning("Error", "Please enter your receiver email address")
+            return
+
+        self.queue_watcher.set_email_info(sender, password, receiver)
+        messagebox.showinfo("Email Set", "sender: " + sender + "\n receiver: " + receiver)
         
     def run(self):
         self.root.mainloop()

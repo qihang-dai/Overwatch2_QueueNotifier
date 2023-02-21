@@ -1,6 +1,7 @@
 from PIL import ImageDraw
 import datetime
 import logging
+import re
 
 # create a logger
 logger = logging.getLogger("mylogger")
@@ -58,4 +59,18 @@ def print_rgb_color(rgb):
 
 # print_rgb_color(rgb)
 
+def is_valid_email(email):
+    """
+    Verify if the given email address is valid.
+
+    Returns True if the email address is valid, False otherwise.
+    """
+    # Regular expression for email validation
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+    # Use the re.match() function to check if the email matches the pattern
+    match = re.match(pattern, email)
+    
+    # If the match is not None, then the email is valid
+    return match is not None
 

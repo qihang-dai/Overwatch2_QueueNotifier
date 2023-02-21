@@ -1,5 +1,2 @@
-pytest
-python-dotenv
-pywin32
-traitlets
-win32gui==221.6
+python-dotenv==0.21.1
+Pillow==9.3.0

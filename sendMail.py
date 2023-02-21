@@ -8,6 +8,7 @@ from utils import logger
 def send(sender_email, password, receiver_email):
     load_dotenv()
     if not receiver_email:
+        logger.error("no receiver email")
         return
     # Email parameters from .env
     if not sender_email:
@@ -17,8 +18,10 @@ def send(sender_email, password, receiver_email):
         password = os.getenv('PASSWORD')
     subject = "Game Found"
     body = "Hello, game has been found!"
-
-    logger.info(f"Sending email to {receiver_email} from {sender_email}")
+    print(sender_email, password, receiver_email)
+    print("sending email to", receiver_email, "from", sender_email)
+    logger.info("sending email to %s from %s", receiver_email, sender_email)
+    logger.debug("debugging")
 
     # Create email message
     msg = EmailMessage()

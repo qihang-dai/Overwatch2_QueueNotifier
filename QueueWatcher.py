@@ -9,6 +9,10 @@ class QueueWatcher:
     def __init__(self, window_name="Overwatch"):
         self.window_name = window_name
         self.window = win32gui.FindWindow(None, window_name)
+        if self.window:
+            self.found = True
+        else:
+            self.found = False
         self.position = (-5,-5)
         self.alive = threading.Event()
         self.timeInfo = {"start_time": 0, "end_time": 0, "time_spent": 0}
@@ -19,9 +23,15 @@ class QueueWatcher:
         self.emailInfo["password"] = password
         self.emailInfo["receiver"] = receiver
     
+    def get_email_info(self):
+        return self.emailInfo
+    
     def is_queue_alive(self):
         return self.alive.is_set()
     
+    def is_window_found(self):
+        return self.found
+
     def set_alive(self):
         self.alive.set()
     
@@ -105,6 +115,7 @@ class QueueWatcher:
                 self.set_dead()
                 logger.info("queue finished, queueing time: %s", time_spent)
                 send(self.emailInfo["email"], self.emailInfo["password"], self.emailInfo["receiver"])
+                logger.info("email called")
                 return True
             prev = cur_pixel
             time.sleep(5)
