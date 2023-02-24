@@ -12,7 +12,7 @@ dev logs in notion [here](https://www.notion.so/Overwatch-Queue-Project-73d4bdb4
 
 Small 16 MB file, though i add some big gif images to make it look better. compressed in zip file.
 
-[Download](https://github.com/qihang-dai/Overwatch2_QueueNotifier/releases/tag/v0.0.0)
+[Download](https://github.com/qihang-dai/Overwatch2_QueueNotifier)
 
 ## Future features
 
