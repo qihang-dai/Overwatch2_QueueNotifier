@@ -6,7 +6,7 @@
 
 discord bot is not deployed on cloud so you need to host it yourself. checkout the [dcbot branch](https://github.com/qihang-dai/Overwatch2_QueueNotifier/tree/dcbot)
 
-dev logs in notion [here](https://www.notion.so/Overwatch-Queue-Project-73d4bdb41b204aee8fdac16113148adb)
+dev logs in notion [here](https://tested-ulna-5f6.notion.site/Overwatch-Queue-Project-73d4bdb41b204aee8fdac16113148adb)
 
 ## Download .exe file
 
